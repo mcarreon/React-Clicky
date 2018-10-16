@@ -1,25 +1,52 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import Scoreboard from './components/scoreboard';
+import Row from './components/row';
+import Instructions from './components/instructions';
+import Container from './components/container';
+import Pictures from './pictures.json';
+import PictureCard from './components/pictureCard';
 import './App.css';
 
 class App extends Component {
+
+  state = {
+    gameStart: false,
+    pictures: Pictures
+  }
+
+  endInstructions = () => {
+    this.setState({ gameStart: true });
+  }
+
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+      <div className="app-body">
+        <nav className="shadow-lg navbar navbar-dark bg-dark ">
+          <ul className="p-0 m-0 w-100">
+            <li><span className="navbar-brand mb-0 h1">Clicky the picky!</span></li>
+            <li>Timer</li>
+            <Scoreboard></Scoreboard>
+          </ul>
+        </nav>    
+        <div className="container-fluid">
+          {this.state.gameStart ? 
+          (<Container>
+            <Row>
+            {this.state.pictures.map(picture => {
+              return (
+                <PictureCard 
+                id={picture.id}
+                url={picture.url}
+                />
+              );
+            })}
+            </Row>
+          </Container>) : 
+          (<Row>
+            <Instructions endInstructions={this.endInstructions} />
+          </Row>)
+          }
+        </div>
       </div>
     );
   }
