@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Scoreboard from './components/scoreboard';
 import Row from './components/row';
 import Instructions from './components/instructions';
 import Container from './components/container';
@@ -11,11 +10,43 @@ class App extends Component {
 
   state = {
     gameStart: false,
-    pictures: Pictures
+    pictures: Pictures,
+    clickedPictures: [],
+    score: 0,
+    topScore: 0,
+    correctGuess: 3
   }
 
   endInstructions = () => {
     this.setState({ gameStart: true });
+  }
+
+  handlePicClick = id => {
+    const pics = this.state.pictures;
+    const shuffleArray = arr => arr
+    .map(a => [Math.random(), a])
+    .sort((a, b) => a[0] - b[0])
+    .map(a => a[1]);
+    const shuffledPics = shuffleArray(pics);
+
+    if (this.state.clickedPictures.length === 0 ) {
+      const newClickedPics = this.state.clickedPictures;
+      newClickedPics.push(id);
+      this.setState({clickedPictures: newClickedPics, score: this.state.score + 1, pictures: shuffledPics, correctGuess: 1});
+    }
+    else {
+      const pastClicks = this.state.clickedPictures.filter(ids => ids == id);
+      if (pastClicks.length === 0) {
+        const newClickedPics = this.state.clickedPictures;
+        newClickedPics.push(id);
+        this.setState({clickedPictures: newClickedPics, score: this.state.score + 1, pictures: shuffledPics, correctGuess: 1});
+      }
+      else {
+        console.log("You lose :(");
+        this.state.score > this.state.topScore ? this.setState({topScore: this.state.score, score: 0}) : this.setState({score: 0});
+        this.setState({clickedPictures: [], pictures: shuffledPics, correctGuess: 0});   
+      }
+    }
   }
 
   render() {
@@ -24,8 +55,10 @@ class App extends Component {
         <nav className="shadow-lg navbar navbar-dark bg-dark ">
           <ul className="p-0 m-0 w-100">
             <li><span className="navbar-brand mb-0 h1">Clicky the picky!</span></li>
-            <li>Timer</li>
-            <Scoreboard></Scoreboard>
+            {this.state.correctGuess === 1 ? (<li className="correct">You guessed correctly!</li>) : this.state.correctGuess === 3 ? ((<li className="spin">:^{")"}</li>)) : (<li className="wrong">You guessed incorrectly!</li>)}
+            <li>
+              Score: <span>{ this.state.score }</span> | Top Score: <span>{ this.state.topScore }</span>
+            </li>
           </ul>
         </nav>    
         <div className="container-fluid">
@@ -35,8 +68,10 @@ class App extends Component {
             {this.state.pictures.map(picture => {
               return (
                 <PictureCard 
-                id={picture.id}
+                value={picture.id}
+                key={picture.id}
                 url={picture.url}
+                handlePicClick={this.handlePicClick}
                 />
               );
             })}

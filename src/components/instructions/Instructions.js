@@ -23,7 +23,7 @@ class Instructions extends Component {
 
         const dialog2 = (
             <div className="arrow_box justify-content-md-center text-center">
-                <p className="m-4">Click the pics unclicked before, there is no other way to raise your score. Beware, click a pic clicked before and say goodbye to your precious score :^{")"}. Make sure to watch the clock!</p>
+                <p className="m-4">Click the pics unclicked before, there is no other way to raise your score. Beware, click a pic clicked before and say goodbye to your precious score :^{")"}.</p>
                 <button className="btn btn-primary mb-3" onClick={this.props.endInstructions}>I get it, lets begin!</button>
             </div>
         );
